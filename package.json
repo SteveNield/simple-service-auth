@@ -1,0 +1,27 @@
+{
+  "name": "winter-simple-auth",
+  "version": "1.0.0",
+  "description": "Adds an authenticate endpoint and middleware for simply securing an application against a provided list of users.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/*-spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SteveNield/winter-simple-auth.git"
+  },
+  "author": "Steve Nield - Winter Softworks Limited - steve@wintersoftworks.co.uk - stevenield.github.io",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SteveNield/winter-simple-auth/issues"
+  },
+  "homepage": "https://github.com/SteveNield/winter-simple-auth#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "jsonwebtoken": "^8.2.0"
+  },
+  "devDependencies": {
+    "express": "^4.16.3",
+    "winter-test-setup": "^1.0.0"
+  }
+}
