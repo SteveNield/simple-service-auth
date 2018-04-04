@@ -18,7 +18,6 @@ describe('Authentication', function(){
     };
     send = sandbox.stub();
     res = {
-      sendStatus: sandbox.stub(),
       status: sandbox.stub().returns({ send: send })
     };
     next = sandbox.stub();
@@ -58,7 +57,7 @@ describe('Authentication', function(){
     it('returns a 401', function(){
       req.headers['x-access-token'] = undefined;
       Authentication(options)(req,res,next);
-      res.sendStatus.should.have.been.calledWith(401);
+      res.status.should.have.been.calledWith(401);
     })
   })
 

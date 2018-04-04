@@ -10,7 +10,7 @@ module.exports = function(options){
 
     if (!token) {
       console.log('No token');
-      return res.sendStatus(401);
+      return res.status(401).send();
     }
 
     jwt.verify(token, options.secret, function(err, payload) {
