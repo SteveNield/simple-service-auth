@@ -3,10 +3,10 @@ var Route = require('./route'),
     Authorization = require('./authorization');
 
 var SimpleAuth = {
-  Setup: setup
+  Setup: _setup
 };
 
-function setup(options){
+function _setup(options){
   SimpleAuth.Authentication = Authentication({
     secret: options.secret
   }),

@@ -4,19 +4,14 @@ module.exports = function(options) {
   return function(app) {
     app.post('/authenticate', function(req, res) {
 
-      var failResponse = {
-        success: false,
-        message: 'authentication failed'
-      };
-
       function fail(status) {
         console.log('Auth failed with status ' + status + ' Key: ' + req.body.accessKey);
-        res.status(status).send(failResponse);
+        res.status(status).send();
       }
 
       if (!req.body.accessKey)
         return fail(400);
-        
+
       let user = options.users.find(function(user) {
         return user.accessKey === req.body.accessKey;
       });
