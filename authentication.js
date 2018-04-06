@@ -10,13 +10,13 @@ module.exports = function(options){
 
     if (!token) {
       console.log('No token');
-      return res.status(401).send();
+      return res.sendStatus(401);
     }
 
     jwt.verify(token, options.secret, function(err, payload) {
       if (err) {
         console.log(err);
-        return res.status(401).send({message: 'InvalidToken'});
+        return res.sendStatus(401);
       }
 
       req.user = payload;

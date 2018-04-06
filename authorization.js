@@ -1,13 +1,13 @@
 module.exports.for = function(requiredRoles) {
   return function(req, res, next) {
     if (!requiredRoles) {
-      return res.status(500).send();
+      return res.sendStatus(500);
     }
 
     if (requiredRoles.find(function(requiredRole) {
       return requiredRole === req.user.role;
     }) === undefined) {
-      res.status(401).send();
+      res.sendStatus(401);
     } else {
       next();
     }

@@ -19,7 +19,7 @@ describe('Route', function(){
       }
     }
     res = {
-      status: sandbox.stub().returns({ send: sandbox.stub() }),
+      sendStatus: sandbox.stub(),
       json: sandbox.stub()
     }
     options = {
@@ -52,7 +52,7 @@ describe('Route', function(){
         req.body.accessKey = undefined;
         Route(options)(app);
         app['/authenticate'](req,res);
-        res.status.should.have.been.calledWith(400);
+        res.sendStatus.should.have.been.calledWith(400);
       })
     })
 
@@ -63,7 +63,7 @@ describe('Route', function(){
         });
         Route(options)(app);
         app['/authenticate'](req,res);
-        res.status.should.have.been.calledWith(401);
+        res.sendStatus.should.have.been.calledWith(401);
       })
     })
 

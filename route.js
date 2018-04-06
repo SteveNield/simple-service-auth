@@ -6,7 +6,7 @@ module.exports = function(options) {
 
       function fail(status) {
         console.log('Auth failed with status ' + status + ' Key: ' + req.body.accessKey);
-        res.status(status).send();
+        res.sendStatus(status);
       }
 
       if (!req.body.accessKey)

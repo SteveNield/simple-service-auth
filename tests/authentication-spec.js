@@ -18,7 +18,7 @@ describe('Authentication', function(){
     };
     send = sandbox.stub();
     res = {
-      status: sandbox.stub().returns({ send: send })
+      sendStatus: sandbox.stub()
     };
     next = sandbox.stub();
     stubDeps();
@@ -57,7 +57,7 @@ describe('Authentication', function(){
     it('returns a 401', function(){
       req.headers['x-access-token'] = undefined;
       Authentication(options)(req,res,next);
-      res.status.should.have.been.calledWith(401);
+      res.sendStatus.should.have.been.calledWith(401);
     })
   })
 
@@ -66,7 +66,7 @@ describe('Authentication', function(){
       deps.jwt.verify.callsFake(function(token, secret, cb){
         cb('Failed', {});
         try{
-          res.status.should.have.been.calledWith(401);
+          res.sendStatus.should.have.been.calledWith(401);
           done();
         } catch(err){
           done(err);
