@@ -1,13 +1,13 @@
 const httpRoute = require('./http/route');
 const httpAuthentication = require('./http/authentication');
 const httpAuthorization = require('./http/authorization');
+const httpProtect = require('./http/protect');
 
-function http({ users, secret }){
-  return {
-    route: httpRoute({ users, secret }),
-    authenticate: httpAuthentication({ secret }),
-    authorize: httpAuthorization
-  }
+const http = {};
+
+function setup({ users, secret }){
+  http.route = httpRoute({ users, secret });
+  http.protect = httpProtect({ secret });
 }
 
-module.exports = { http };
+module.exports = { setup, http };

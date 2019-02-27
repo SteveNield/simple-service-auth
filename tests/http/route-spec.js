@@ -1,6 +1,6 @@
 require('winter-test-setup');
 
-var Route = require('./../http/route'),
+var Route = require('./../../http/route'),
     jwt = require('jsonwebtoken');
 
 describe('Route', function(){

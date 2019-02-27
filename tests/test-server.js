@@ -1,6 +1,7 @@
 var Express = require('express'),
     bodyParser = require('body-parser'),
-    auth = require('./../index').http;
+    auth = require('./../index'),
+    http = require('./../index').http;
 
 var app = new Express();
 app.use(bodyParser());
@@ -14,12 +15,12 @@ const users = [{
   role: 'Writer'
 }];
 
-auth({ users, secret }).route(app);
+auth.setup({ users, secret });
+http.route(app);
 
 app.get(
   '/readprotected',
-  auth.authenticate,
-  auth.authorize.for(['Reader', 'Writer']),
+  http.protect(['Reader', 'Writer']),
   function(req,res){
     res.status(200).json({ message: 'You can read this' });
   }
@@ -27,8 +28,7 @@ app.get(
 
 app.get(
   '/writeprotected',
-  auth.authenticate,
-  auth.authorize.for(['Writer']),
+  http.protect(['Writer']),
   function(req,res){
     res.status(200).json({ message: 'You can read this' });
   }

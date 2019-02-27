@@ -1,6 +1,6 @@
 require('winter-test-setup')
 
-var Authorization = require('./../http/authorization');
+var Authorization = require('./../../http/authorization');
 
 describe('Authorization', function(){
   var sandbox, req, res, next;

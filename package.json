@@ -4,7 +4,7 @@
   "description": "Adds an authenticate endpoint and middleware for simply securing an application against a provided list of users.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/*-spec.js"
+    "test": "mocha tests/**/*-spec.js"
   },
   "repository": {
     "type": "git",
