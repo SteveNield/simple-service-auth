@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 
-module.exports = function(options) {
-  return function(app) {
+module.exports = ({ users, secret }) => {
+  return (app) => {
     app.post('/authenticate', function(req, res) {
 
       function fail(status) {
@@ -12,7 +12,7 @@ module.exports = function(options) {
       if (!req.body.accessKey)
         return fail(400);
 
-      let user = options.users.find(function(user) {
+      let user = users.find(function(user) {
         return user.accessKey === req.body.accessKey;
       });
 
@@ -20,7 +20,7 @@ module.exports = function(options) {
         return fail(401);
       }
 
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), options.secret, {expiresIn: '1440m'});
+      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn: '1440m'});
 
       res.json({success: true, token: token});
     });

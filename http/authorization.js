@@ -1,5 +1,5 @@
-module.exports.for = function(requiredRoles) {
-  return function(req, res, next) {
+module.exports.for = (requiredRoles) => {
+  return (req, res, next) => {
     if (!requiredRoles) {
       return res.sendStatus(500);
     }

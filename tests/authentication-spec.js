@@ -1,6 +1,6 @@
 require('winter-test-setup');
 
-var Authentication = require('./../authentication'),
+var Authentication = require('./../http/authentication'),
     jwt = require('jsonwebtoken');
 
 describe('Authentication', function(){

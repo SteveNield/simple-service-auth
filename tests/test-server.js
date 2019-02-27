@@ -1,28 +1,25 @@
 var Express = require('express'),
     bodyParser = require('body-parser'),
-    SimpleAuth = require('./../index');
+    auth = require('./../index').http;
 
 var app = new Express();
 app.use(bodyParser());
+
 const secret = 'supersecretdonttellanyone';
+const users = [{
+  accessKey: '123123123123',
+  role: 'Reader'
+}, {
+  accessKey: '234234234234',
+  role: 'Writer'
+}];
 
-SimpleAuth.Setup({
-  users: [{
-    accessKey: '123123123123',
-    role: 'Reader'
-  }, {
-    accessKey: '234234234234',
-    role: 'Writer'
-  }],
-  secret: secret
-});
-
-SimpleAuth.Route(app);
+auth({ users, secret }).route(app);
 
 app.get(
   '/readprotected',
-  SimpleAuth.Authentication,
-  SimpleAuth.Authorization.for(['Reader', 'Writer']),
+  auth.authenticate,
+  auth.authorize.for(['Reader', 'Writer']),
   function(req,res){
     res.status(200).json({ message: 'You can read this' });
   }
@@ -30,8 +27,8 @@ app.get(
 
 app.get(
   '/writeprotected',
-  SimpleAuth.Authentication,
-  SimpleAuth.Authorization.for(['Writer']),
+  auth.authenticate,
+  auth.authorize.for(['Writer']),
   function(req,res){
     res.status(200).json({ message: 'You can read this' });
   }
