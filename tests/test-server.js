@@ -8,10 +8,10 @@ app.use(bodyParser());
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
-  accessKey: '123123123123',
+  key: '123123123123',
   role: 'Reader'
 }, {
-  accessKey: '234234234234',
+  key: '234234234234',
   role: 'Writer'
 }];
 

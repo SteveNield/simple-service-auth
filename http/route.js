@@ -5,15 +5,15 @@ module.exports = ({ users, secret }) => {
     app.post('/authenticate', function(req, res) {
 
       function fail(status) {
-        console.log('Auth failed with status ' + status + ' Key: ' + req.body.accessKey);
+        console.log('Auth failed with status ' + status + ' Key: ' + req.body.key);
         res.sendStatus(status);
       }
 
-      if (!req.body.accessKey)
+      if (!req.body.key)
         return fail(400);
 
       let user = users.find(function(user) {
-        return user.accessKey === req.body.accessKey;
+        return user.key === req.body.key;
       });
 
       if (!user) {

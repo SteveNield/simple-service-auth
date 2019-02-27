@@ -15,7 +15,7 @@ describe('Route', function(){
     }
     req = {
       body: {
-        accessKey: '12345'
+        key: '12345'
       }
     }
     res = {
@@ -47,19 +47,19 @@ describe('Route', function(){
   })
 
   describe('/authenticate', function(){
-    describe('when req.body.accessKey is missing', function(){
+    describe('when req.body.key is missing', function(){
       it('responds with 400', function(){
-        req.body.accessKey = undefined;
+        req.body.key = undefined;
         Route(options)(app);
         app['/authenticate'](req,res);
         res.sendStatus.should.have.been.calledWith(400);
       })
     })
 
-    describe('when req.body.accessKey does not match a configured user', function(){
+    describe('when req.body.key does not match a configured user', function(){
       it('responds with 401', function(){
         options.users.push({
-          accessKey: 'TOTALLYUNIQUE'
+          key: 'TOTALLYUNIQUE'
         });
         Route(options)(app);
         app['/authenticate'](req,res);
@@ -67,11 +67,11 @@ describe('Route', function(){
       })
     })
 
-    describe('when req.body.accessKey matches a configured user', function(){
+    describe('when req.body.key matches a configured user', function(){
       it('responds with the result of jwt.sign', function(){
         const token = '2389wkjdfhskdjfh823rfkjdfksjdf';
         options.users.push({
-          accessKey: req.body.accessKey
+          key: req.body.key
         });
         deps.jwt.sign.returns(token);
         Route(options)(app);
