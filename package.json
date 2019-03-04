@@ -18,10 +18,13 @@
   "homepage": "https://github.com/SteveNield/winter-simple-auth#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "jsonwebtoken": "^8.2.0"
+    "jsonwebtoken": "^8.2.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "express": "^4.16.3",
+    "winter-http-client": "^1.0.7",
     "winter-test-setup": "^1.0.0"
   }
 }
