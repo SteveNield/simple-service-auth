@@ -79,8 +79,28 @@ describe('Route', function(){
         res.json.should.have.been.calledWith({
           success: true,
           token: token
-        })
+        });
       })
     })
+
+    describe('config', () => {
+      function testExpiresIn(desc, config, expectedExpiresIn){
+        describe(desc, () => {
+          it(`calls jwt.sign with expiresIn: ${expectedExpiresIn}`, () => {
+            options.users.push({ 
+              key: req.body.key 
+            });
+            options.config = config;
+            Route(options)(app);
+            app['/authenticate'](req,res);
+            deps.jwt.sign.args[0][2].should.deep.equal({ expiresIn: expectedExpiresIn });
+          });
+        });
+      }
+
+      testExpiresIn('no config provided', undefined, '1440m');
+      testExpiresIn('config provided but no expiresIn', {}, '1440m');
+      testExpiresIn('config provided with expiresIn', { expiresIn: '100m' }, '100m');
+    });
   })
 })

@@ -1,6 +1,10 @@
 var jwt = require('jsonwebtoken');
 
-module.exports = ({ users, secret }) => {
+const defaults = {
+  expiresIn: '1440m'
+}
+
+module.exports = ({ users, secret, config = {} }) => {
   return (app) => {
     app.post('/authenticate', function(req, res) {
 
@@ -20,7 +24,9 @@ module.exports = ({ users, secret }) => {
         return fail(401);
       }
 
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn: '1440m'});
+      let expiresIn = config.expiresIn || defaults.expiresIn;
+
+      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn});
 
       res.json({success: true, token: token});
     });

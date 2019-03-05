@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken');
 const keys = require('./keys');
 
-module.exports = ({ users, secret }) => {
+const defaults = {
+  expiresIn: '1440m'
+}
+
+module.exports = ({ users, secret, config = {} }) => {
   return (socket) => {
     socket.on(keys.TOKEN_REQUEST, ({ key }) => {
       if(!key){
@@ -14,9 +18,9 @@ module.exports = ({ users, secret }) => {
         return socket.emit(keys.AUTHENTICATION_ERROR);
       }
 
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {
-        expiresIn: '1440m'
-      });
+      let expiresIn = config.expiresIn || defaults.expiresIn;
+
+      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn});
 
       socket.emit(keys.TOKEN_RESPONSE, {
         success: true,

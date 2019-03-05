@@ -68,5 +68,25 @@ describe('route', () => {
         });
       });
     });
+
+    describe('config', () => {
+      function testExpiresIn(desc, config, expectedExpiresIn){
+        describe(desc, () => {
+          it(`calls jwt.sign with expiresIn: ${expectedExpiresIn}`, () => {
+            route({
+              users: deps.users,
+              config
+            })(deps.socket);
+            deps.socket.on('token-response', () => {});
+            deps.socket.emit('token-request', { key: deps.users[0].key });
+            deps.jwt.sign.args[0][2].should.deep.equal({ expiresIn: expectedExpiresIn });
+          });
+        });
+      }
+
+      testExpiresIn('no config provided', undefined, '1440m');
+      testExpiresIn('config provided without expiresIn', {}, '1440m');
+      testExpiresIn('config provided with expiresIn', { expiresIn: '100m' }, '100m');
+    });
   });
 });
