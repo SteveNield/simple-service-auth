@@ -17,10 +17,10 @@ const socket = {
   protect: functionNotSetup
 }
 
-function setup({ users, secret }){
-  http.route = httpRoute({ users, secret });
+function setup({ users, secret, config }){
+  http.route = httpRoute({ users, secret, config });
   http.protect = httpProtect({ secret });
-  socket.route = socketRoute({ users, secret });
+  socket.route = socketRoute({ users, secret, config });
   socket.protect = socketProtect({ secret });
 }
 

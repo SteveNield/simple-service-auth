@@ -1,6 +1,6 @@
 {
   "name": "winter-simple-auth",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Adds an authenticate endpoint and middleware for simply securing an application against a provided list of users.",
   "main": "index.js",
   "scripts": {

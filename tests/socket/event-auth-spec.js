@@ -5,7 +5,7 @@ const io = require('socket.io-client');
 describe('anonymous connection with token provision event and authentication per event', () => {
   let socket;
 
-  const server = require('../../examples/socket/server-socket-authentication');
+  const server = require('../../examples/socket/event-auth');
 
   function connect(){
     return new Promise((resolve) => {

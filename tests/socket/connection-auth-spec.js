@@ -6,8 +6,8 @@ const http = require('winter-http-client');
 describe('authenticating on the connection and token provision from HTTP endpoint', () => {
   let socket;
 
-  const tokenProvider = require('./../../examples/http/server-roles-per-endpoint');
-  const socketServer = require('./../../examples/socket/server-authentication');
+  const tokenProvider = require('./../../examples/http/endpoint-auth');
+  const socketServer = require('./../../examples/socket/connection-auth');
   const USER_AUTHENTICATION_KEY = '123123123123';
   const CONTRIBUTOR_AUTHENTICATION_KEY = '234kjh234kjh2k34';
   const SOCKET_SERVER_URL = 'http://localhost:5222';
