@@ -4,7 +4,7 @@ const socketRoute = require('./socket/route');
 const socketProtect = require('./socket/protect');
 
 function functionNotSetup(){
-  throw new Error('auth has not yet been set.  call setup() first.')
+  throw new Error('auth has not yet been set.  call setup() first.');
 }
 
 const http = {
