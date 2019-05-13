@@ -1,4 +1,4 @@
-### simple-auth
+# simple-auth
 
 Simple token-based authentication and authorization for express and socket.io services.
 
