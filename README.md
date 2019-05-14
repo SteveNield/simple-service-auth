@@ -82,4 +82,54 @@ app.get(
 )
 ```
 
+## Usage (socket.io)
+
+Full examples can be found at [./examples/socket/](./examples/socket/)
+
+### setup
+
+```javascript
+const auth = require('simple-auth');
+const http = require('http');
+
+const secret = 'supersecretdonttellanyone';
+const users = [{
+  key: '123123123123',
+  role: 'User'
+}, {
+  key: '234kjh234kjh2k34',
+  role: 'Contributor'
+}, {
+  key: '234234234234',
+  role: 'Admin'
+}];
+
+auth.setup({ users, secret });
+```
+
+### route and protect
+
+```javascript
+const server = http.createServer();
+server.listen(8080);
+
+const io = require('socket.io')(server);
+
+io.on('connect', (socket) => {
+  console.log('connected');
+
+  auth.socket.route(socket);
+
+  socket.use(auth.socket.protect(['User', 'Admin']));
+
+  socket.on('protected-resource-1-request', () => {
+    socket.emit('protected-resource-1', { message: 'protected-resource-1'});
+  });
+
+  socket.on('protected-resource-2-request', () => {
+    socket.emit('protected-resource-2', { message: 'protected-resource-2'});
+  });
+});
+```
+
 
