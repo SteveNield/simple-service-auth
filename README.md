@@ -54,24 +54,30 @@ auth.http.route(app);
 app.get(
   '/info',
   auth.http.protect(),
-  function(req,res){
-    res.status(200).json({ message: 'Any authenticated user can read this' });
+  (req,res) => {
+    res.status(200).json({ 
+      message: 'Any authenticated user can read this' 
+    });
   }
 );
 
 app.get(
   '/protected_resource_1',
   auth.http.protect(['User', 'Admin']),
-  function(req,res){
-    res.status(200).json({ message: 'Only Users and Admins can read this' });
+  (req,res) => {
+    res.status(200).json({ 
+      message: 'Only Users and Admins can read this' 
+    });
   }
 );
 
 app.get(
   '/protected_resource_2',
   auth.http.protect(['Admin']),
-  function(req,res){
-    res.status(200).json({ message: 'Only Admins can read this' });
+  (req,res) => {
+    res.status(200).json({ 
+      message: 'Only Admins can read this' 
+    });
   }
 )
 ```
