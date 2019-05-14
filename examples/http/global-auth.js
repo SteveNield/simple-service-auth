@@ -1,6 +1,7 @@
-var Express = require('express'),
-    bodyParser = require('body-parser'),
-    auth = require('../../index');
+const Express = require('express');
+const auth = require('../../index');
+
+const port = 5221;
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
@@ -14,26 +15,32 @@ const users = [{
   role: 'Admin'
 }];
 
-var app = new Express();
-app.use(bodyParser());
-auth.setup({ users, secret });
+const app = new Express();
+
+auth.setup({ 
+  users, 
+  secret 
+});
 auth.http.route(app);
-app.use(auth.http.protect(['User','Admin']));
+app.use(auth.http.protect([
+  'User',
+  'Admin'
+]));
 
 app.get(
   '/protected_resource_1',
-  function(req,res){
+  (req,res) => {
     res.status(200).json({ message: 'Only Users and Admins can read this' });
   }
 );
 
 app.get(
   '/protected_resource_2',
-  function(req,res){
+  (req,res) => {
     res.status(200).json({ message: 'Only Users and Admins can read this' });
   }
 )
 
-module.exports = app.listen('5220', function(){
-  console.log('listening on 5220')
+module.exports = app.listen(port, () => {
+  console.log(`listening on ${port}`);
 });

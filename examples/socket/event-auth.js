@@ -1,4 +1,3 @@
-const Express = require('express');
 const http = require('http');
 const auth = require('../../index');
 
@@ -14,9 +13,7 @@ const users = [{
   role: 'Admin'
 }];
 
-const app = new Express();
-
-const server = http.createServer(app);
+const server = http.createServer();
 server.listen(5223);
 
 auth.setup({ users, secret });

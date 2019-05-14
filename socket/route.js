@@ -12,15 +12,21 @@ module.exports = ({ users, secret, config = {} }) => {
         return socket.emit(keys.AUTHENTICATION_ERROR);
       }
 
-      let user = users.find(u => u.key === key);
+      const user = users.find(u => u.key === key);
 
       if(!user){
         return socket.emit(keys.AUTHENTICATION_ERROR);
       }
 
-      let expiresIn = config.expiresIn || defaults.expiresIn;
+      const expiresIn = config.expiresIn || defaults.expiresIn;
 
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn});
+      const token = jwt.sign(
+        JSON.parse(JSON.stringify(user)), 
+        secret, 
+        {
+          expiresIn
+        }
+      );
 
       socket.emit(keys.TOKEN_RESPONSE, {
         success: true,

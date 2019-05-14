@@ -1,22 +1,22 @@
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const requestHandlers = require('./request-handlers');
 
-module.exports = function(options){
+module.exports = (options) => {
   if(!options.secret){
     throw new Error('Secret is required');
   }
 
-  return function(req, res, next) {
-    var token = req.headers['x-access-token'];
+  return (req, res, next) => {
+    const token = req.headers['x-access-token'];
+    const badRequest = requestHandlers.getBadRequestHandler(res);
 
     if (!token) {
-      console.log('No token');
-      return res.sendStatus(401);
+      return badRequest('no token');
     }
 
-    jwt.verify(token, options.secret, function(err, payload) {
+    jwt.verify(token, options.secret, (err, payload) => {
       if (err) {
-        console.log(err);
-        return res.sendStatus(401);
+        return badRequest(err);
       }
 
       req.user = payload;

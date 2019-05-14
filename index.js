@@ -3,7 +3,7 @@ const httpProtect = require('./http/protect');
 const socketRoute = require('./socket/route');
 const socketProtect = require('./socket/protect');
 
-function functionNotSetup(){
+const functionNotSetup = () => {
   throw new Error('auth has not yet been set.  call setup() first.');
 }
 
@@ -17,11 +17,26 @@ const socket = {
   protect: functionNotSetup
 }
 
-function setup({ users, secret, config }){
-  http.route = httpRoute({ users, secret, config });
-  http.protect = httpProtect({ secret });
-  socket.route = socketRoute({ users, secret, config });
-  socket.protect = socketProtect({ secret });
+const setup = ({ users, secret, config }) => {
+  http.route = httpRoute({ 
+    users, 
+    secret, 
+    config 
+  });
+
+  http.protect = httpProtect(secret);
+
+  socket.route = socketRoute({ 
+    users, 
+    secret, 
+    config 
+  });
+  
+  socket.protect = socketProtect(secret);
 }
 
-module.exports = { setup, http, socket };
+module.exports = { 
+  setup, 
+  http, 
+  socket 
+};

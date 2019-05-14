@@ -1,12 +1,12 @@
 require('winter-test-setup');
 
-var Authentication = require('./../../http/authentication'),
-    jwt = require('jsonwebtoken');
+const Authentication = require('./../../http/authentication');
+const jwt = require('jsonwebtoken');
 
-describe('Authentication', function(){
-  var sandbox, req, res, next, send, options, deps;
+describe('Authentication', () => {
+  let sandbox, req, res, next, options, deps;
 
-  beforeEach(function(){
+  beforeEach(() => {
     sandbox = sinon.collection;
     options = {
       secret: 'a'
@@ -24,11 +24,11 @@ describe('Authentication', function(){
     stubDeps();
   })
 
-  afterEach(function(){
+  afterEach(() => {
     sandbox.restore();
   })
 
-  function stubDeps(){
+  const stubDeps = () => {
     deps = {
       jwt: {}
     };
@@ -37,12 +37,12 @@ describe('Authentication', function(){
       .stub(jwt, 'verify');
   }
 
-  it('returns a function', function(){
+  it('returns a function', () => {
     Authentication(options).should.be.a('Function');
   })
 
-  describe('when secret is not specified', function(){
-    it('throws an error', function(done){
+  describe('when secret is not specified', () => {
+    it('throws an error', (done) => {
       try{
         options.secret = undefined;
         Authentication(options);
@@ -53,17 +53,17 @@ describe('Authentication', function(){
     })
   })
 
-  describe('when token is missing', function(){
-    it('returns a 401', function(){
+  describe('when token is missing', () => {
+    it('returns a 401', () => {
       req.headers['x-access-token'] = undefined;
       Authentication(options)(req,res,next);
       res.sendStatus.should.have.been.calledWith(401);
     })
   })
 
-  describe('when token cannot be verified against secret', function(){
-    it('returns a 401 and an appropriate message', function(done){
-      deps.jwt.verify.callsFake(function(token, secret, cb){
+  describe('when token cannot be verified against secret', () => {
+    it('returns a 401 and an appropriate message', (done) => {
+      deps.jwt.verify.callsFake((token, secret, cb) => {
         cb('Failed', {});
         try{
           res.sendStatus.should.have.been.calledWith(401);
@@ -76,10 +76,10 @@ describe('Authentication', function(){
     })
   })
 
-  describe('when token is verified against secret', function(){
-    it('sets the req.user to the payload and calls next()', function(done){
+  describe('when token is verified against secret', () => {
+    it('sets the req.user to the payload and calls next()', (done) => {
       const payload = {a:'b'}
-      deps.jwt.verify.callsFake(function(token, secret, cb){
+      deps.jwt.verify.callsFake((token, secret, cb) => {
         if(secret === options.secret && token === req.headers['x-access-token']){
           cb(null, payload);
           try{

@@ -1,18 +1,36 @@
 require('winter-test-setup');
 
-var Route = require('./../../http/route'),
-    jwt = require('jsonwebtoken');
+const Route = require('./../../http/route');
+const jwt = require('jsonwebtoken');
 
-describe('Route', function(){
-  var sandbox, app, req, res, options, deps;
+class AppStub {
+  constructor(){
+    this.endpoints = {};
+    this.middleware = [];
+  }
 
-  beforeEach(function(){
-    sandbox = sinon.collection;
-    app = {
-      post: sandbox.stub().callsFake(function(endpoint, cb){
-        this[endpoint] = cb
-      })
+  getEndpoint(endpoint){
+    if(!this.endpoints.hasOwnProperty(endpoint)){
+      throw new Error(`endpoint ${endpoint} not registered`);
     }
+    return this.endpoints[endpoint];
+  }
+
+  post(endpoint, cb){
+    this.endpoints[endpoint] = cb;
+  }
+
+  use(newMiddleware){
+    this.middleware.push(newMiddleware);
+  }
+}
+
+describe('Route', () => {
+  let sandbox, app, req, res, options, deps;
+
+  beforeEach(() => {
+    sandbox = sinon.collection;
+    app = new AppStub();
     req = {
       body: {
         key: '12345'
@@ -29,11 +47,11 @@ describe('Route', function(){
     stubDeps();
   })
 
-  afterEach(function(){
+  afterEach(() => {
     sandbox.restore();
   })
 
-  function stubDeps(){
+  const stubDeps = () => {
     deps = {
       jwt: {
         sign: sandbox.stub(jwt, 'sign')
@@ -41,41 +59,41 @@ describe('Route', function(){
     }
   }
 
-  it('sets a post endpoint at /authenticate', function(){
+  it('sets a post endpoint at /authenticate', () => {
     Route(options)(app);
-    app['/authenticate'].should.exist;
-  })
+    app.getEndpoint('/authenticate').should.exist;
+  });
 
-  describe('/authenticate', function(){
-    describe('when req.body.key is missing', function(){
-      it('responds with 400', function(){
+  describe('/authenticate', () => {
+    describe('when req.body.key is missing', () => {
+      it('responds with 400', () => {
         req.body.key = undefined;
         Route(options)(app);
-        app['/authenticate'](req,res);
+        app.getEndpoint('/authenticate')(req,res);
         res.sendStatus.should.have.been.calledWith(400);
       })
     })
 
-    describe('when req.body.key does not match a configured user', function(){
-      it('responds with 401', function(){
+    describe('when req.body.key does not match a configured user', () => {
+      it('responds with 401', () => {
         options.users.push({
           key: 'TOTALLYUNIQUE'
         });
         Route(options)(app);
-        app['/authenticate'](req,res);
+        app.getEndpoint('/authenticate')(req,res);
         res.sendStatus.should.have.been.calledWith(401);
       })
     })
 
-    describe('when req.body.key matches a configured user', function(){
-      it('responds with the result of jwt.sign', function(){
+    describe('when req.body.key matches a configured user', () => {
+      it('responds with the result of jwt.sign', () => {
         const token = '2389wkjdfhskdjfh823rfkjdfksjdf';
         options.users.push({
           key: req.body.key
         });
         deps.jwt.sign.returns(token);
         Route(options)(app);
-        app['/authenticate'](req,res);
+        app.getEndpoint('/authenticate')(req,res);
         res.json.should.have.been.calledWith({
           success: true,
           token: token
@@ -84,7 +102,7 @@ describe('Route', function(){
     })
 
     describe('config', () => {
-      function testExpiresIn(desc, config, expectedExpiresIn){
+      const testExpiresIn = (desc, config, expectedExpiresIn) => {
         describe(desc, () => {
           it(`calls jwt.sign with expiresIn: ${expectedExpiresIn}`, () => {
             options.users.push({ 
@@ -92,7 +110,7 @@ describe('Route', function(){
             });
             options.config = config;
             Route(options)(app);
-            app['/authenticate'](req,res);
+            app.getEndpoint('/authenticate')(req,res);
             deps.jwt.sign.args[0][2].should.deep.equal({ expiresIn: expectedExpiresIn });
           });
         });

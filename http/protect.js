@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 
-function protect({ secret }){
+const protect = secret => {
   if(!secret){
     throw new Error('secret is required');
   }
@@ -14,7 +14,7 @@ function protect({ secret }){
         return res.sendStatus(401);
       }
   
-      jwt.verify(token, secret, function(err, payload) {
+      jwt.verify(token, secret, (err, payload) => {
         if (err) {
           console.log(err);
           return res.sendStatus(401);

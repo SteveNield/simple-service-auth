@@ -16,7 +16,7 @@ describe('route', () => {
     sandbox.restore();
   });
 
-  function stubDeps(){
+  const stubDeps = () => {
     deps = { 
       socket: {},
       users: [],
@@ -70,7 +70,7 @@ describe('route', () => {
     });
 
     describe('config', () => {
-      function testExpiresIn(desc, config, expectedExpiresIn){
+      const testExpiresIn = (desc, config, expectedExpiresIn) => {
         describe(desc, () => {
           it(`calls jwt.sign with expiresIn: ${expectedExpiresIn}`, () => {
             route({

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const reservedEvents = ['token-request'];
 
-function decodeToken({ token, secret, roles }){
+const decodeToken = ({ token, secret, roles }) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secret, (err, payload) => {
       if(err){
@@ -20,38 +20,38 @@ function decodeToken({ token, secret, roles }){
   });
 }
 
-function authenticateConnection({ packet, secret, roles, next, unauthorized }){
+const authenticateConnection = ({ packet, secret, roles, next, unauthorized }) => {
   if(!packet.handshake.hasOwnProperty('query') || !packet.handshake.query.hasOwnProperty('token')){
     return unauthorized();
   }
 
-  let token = packet.handshake.query.token;
+  const token = packet.handshake.query.token;
 
   decodeToken({ token, secret, roles })
     .then(next)
     .catch(unauthorized);
 }
 
-function authenticateEvent({ packet, secret, roles, next, unauthorized }){
-  let eventName = packet[0];
+const authenticateEvent = ({ packet, secret, roles, next, unauthorized }) => {
+  const eventName = packet[0];
   
   if(reservedEvents.some(e => e === eventName)){
     return next();
   }
 
-  let args = packet[1];
+  const args = packet[1];
   if(!args || !args.token){
     return unauthorized();
   }
 
-  token = args.token;
+  const token = args.token;
 
   decodeToken({ token, secret, roles })
     .then(next)
     .catch(unauthorized);
 }
 
-function protect({ secret }){
+const protect = secret  => {
   if(!secret){
     throw new Error('secret required');
   }
@@ -59,16 +59,22 @@ function protect({ secret }){
   return (roles) => {
     return (packet, next) => {
 
-      function unauthorized(){
-        next(new Error('unauthorized'));
-      }
-
-      authenticate = (packet.handshake) ? authenticateConnection : authenticateEvent;
+      const authenticate = (packet.handshake) 
+        ? authenticateConnection 
+        : authenticateEvent;
 
       try{
-        authenticate({ packet, secret, roles, next, unauthorized });
+        authenticate({ 
+          packet, 
+          secret, 
+          roles, 
+          next, 
+          unauthorized: () => {
+            next(new Error('unauthorized'));
+          } 
+        });
       } catch(err) {
-        console.log(err);
+        console.error(err);
       }
     }
   }

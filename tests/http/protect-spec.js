@@ -4,7 +4,7 @@ const protect = require('./../../http/protect');
 const jwt = require('jsonwebtoken');
 
 describe('protect', () => {
-  let sandbox, req, res, next, send, secret, deps;
+  let sandbox, req, res, next, secret, deps;
 
   beforeEach(() => {
     sandbox = sinon.collection;
@@ -20,7 +20,7 @@ describe('protect', () => {
     sandbox.restore();
   });
 
-  function stubDeps(){
+  const stubDeps = () => {
     deps = { jwt: {} };
 
     deps.jwt.verify = sandbox
@@ -28,7 +28,7 @@ describe('protect', () => {
   }
 
   it('returns a function', () => {
-    protect({ secret }).should.be.a('Function');
+    protect(secret).should.be.a('Function');
   });
 
   describe('when a secret is not specified', () => {
@@ -65,7 +65,7 @@ describe('protect', () => {
   });
 
   describe('when token is verified against secret', () => {
-    function assertOnJwtVerifySuccess(payload, done, assertion){
+    const assertOnJwtVerifySuccess = (payload, done, assertion) => {
       deps.jwt.verify.callsFake((token, sc, cb) => {
         if(sc === secret && token === req.headers['x-access-token']){
           cb(null, payload);
@@ -76,7 +76,7 @@ describe('protect', () => {
             done(err);
           }
         } else {
-          done('Token ('+token+') and secret '+secret+' are not correct');
+          done('Token ('+token+') and secret '+sc+' are not correct');
         }
       })
     }
@@ -87,7 +87,7 @@ describe('protect', () => {
         assertOnJwtVerifySuccess(payload, done, () => {
           next.should.have.been.calledOnce;
         });
-        protect({ secret })()(req,res,next);
+        protect(secret)()(req,res,next);
       });
     });
 
@@ -97,7 +97,7 @@ describe('protect', () => {
         assertOnJwtVerifySuccess(payload, done, () => {
           next.should.have.been.calledOnce;
         });
-        protect({ secret })([ 'Reader' ])(req,res,next);
+        protect(secret)([ 'Reader' ])(req,res,next);
       });
     });
 
@@ -107,7 +107,7 @@ describe('protect', () => {
         assertOnJwtVerifySuccess(payload, done, () => {
           res.sendStatus.should.have.been.calledWith(401);
         });
-        protect({ secret })([ 'Writer' ])(req,res,next);
+        protect(secret)([ 'Writer' ])(req,res,next);
       })
     });
   })

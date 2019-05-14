@@ -1,14 +1,27 @@
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const express = require('express');
 
 const defaults = {
   expiresIn: '1440m'
 }
 
+const isPostMiddlewareApplied = (app) => {
+  if(!app._router) return false;
+
+  return !app._router.stack.some(l => {
+    return l && l.handle && l.handle.name === 'json';
+  });
+}
+
 module.exports = ({ users, secret, config = {} }) => {
   return (app) => {
-    app.post('/authenticate', function(req, res) {
+    if (!isPostMiddlewareApplied(app)){
+      app.use(express.json());
+    }
 
-      function fail(status) {
+    app.post('/authenticate', (req, res) => {
+
+       const fail = (status) => {
         console.log('Auth failed with status ' + status + ' Key: ' + req.body.key);
         res.sendStatus(status);
       }
@@ -16,7 +29,7 @@ module.exports = ({ users, secret, config = {} }) => {
       if (!req.body.key)
         return fail(400);
 
-      let user = users.find(function(user) {
+      const user = users.find((user) => {
         return user.key === req.body.key;
       });
 
@@ -24,11 +37,20 @@ module.exports = ({ users, secret, config = {} }) => {
         return fail(401);
       }
 
-      let expiresIn = config.expiresIn || defaults.expiresIn;
+      const expiresIn = config.expiresIn || defaults.expiresIn;
 
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), secret, {expiresIn});
+      const token = jwt.sign(
+        JSON.parse(JSON.stringify(user)), 
+        secret, 
+        {
+          expiresIn
+        }
+      );
 
-      res.json({success: true, token: token});
+      res.json({
+        success: true, 
+        token
+      });
     });
   }
 }

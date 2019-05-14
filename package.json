@@ -18,12 +18,12 @@
   "homepage": "https://github.com/SteveNield/simple-auth#readme",
   "dependencies": {
     "express": "^4.16.3",
-    "body-parser": "^1.18.2",
     "jsonwebtoken": "^8.2.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
+    "eslint": "^5.16.0",
     "winter-http-client": "^1.0.7",
     "winter-test-setup": "^1.0.0"
   }

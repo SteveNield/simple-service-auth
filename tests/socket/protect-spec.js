@@ -15,7 +15,7 @@ describe('protect', () => {
     sandbox.restore();
   });
 
-  function stubDeps(){
+  const stubDeps = () => {
     deps = {};
 
     deps.next = sandbox.stub();
@@ -36,7 +36,7 @@ describe('protect', () => {
   describe('when secret is missing', () => {
     it('throws an error', (done) => {
       try{
-        protect({});
+        protect();
         done('error expected')
       } catch(err){
         done();
@@ -47,7 +47,7 @@ describe('protect', () => {
   describe('when authenticating connection', () => {
     describe('when token is missing', () => {
       it('calls next with an error', () => {
-        protect({ secret: deps.secret })()(deps.connectionPacket, deps.next);
+        protect(deps.secret)()(deps.connectionPacket, deps.next);
         deps.next.should.have.been.calledWithMatch(sinon.match.instanceOf(Error));
       });
     });
@@ -57,7 +57,7 @@ describe('protect', () => {
     describe('when no arguments are passed', () => {
       it('calls next with an error', () => {
         deps.packet[1].token = undefined;
-        protect({ secret: deps.secret })()([deps.packet[0]], deps.next);
+        protect(deps.secret)()([deps.packet[0]], deps.next);
         deps.next.should.have.been.calledWithMatch(sinon.match.instanceOf(Error));
       });
     });
@@ -65,7 +65,7 @@ describe('protect', () => {
     describe('when token is missing', () => {
       it('calls next with an error', () => {
         deps.packet[1].token = undefined;
-        protect({ secret: deps.secret })()(deps.packet, deps.next);
+        protect(deps.secret)()(deps.packet, deps.next);
         deps.next.should.have.been.calledWithMatch(sinon.match.instanceOf(Error));
       });
     });
@@ -73,7 +73,7 @@ describe('protect', () => {
     describe('when event name is reserved', () => {
       it('calls next', () => {
         deps.packet[0] = 'token-request';
-        protect({ secret: deps.secret })()(deps.packet, deps.next);
+        protect(deps.secret)()(deps.packet, deps.next);
         deps.next.args[0].length.should.equal(0);
       });
     });
@@ -81,14 +81,14 @@ describe('protect', () => {
 
   describe ('when authenticating either connection or event', () => {
     describe('when a token cannot be verified against a secret', () => {
-      function testInvalidTokenProducesError(desc, mockPacket){
+      const testInvalidTokenProducesError = (desc, mockPacket) => {
         describe(desc, () => {
           it('calls next with an error', (done) => {
             const packet = mockPacket();
             deps.jwt.verify.callsFake((t, s, cb) => {
               cb('failed', {});
             });
-            protect({ secret: deps.secret })()(packet, (err) => {
+            protect(deps.secret)()(packet, (err) => {
               err.message.should.equal('unauthorized');
               done();
             });
@@ -108,7 +108,7 @@ describe('protect', () => {
     });
   
     describe('when a token is successfully verified', () => {
-      function jwtVerifySuccess(payload){
+      const jwtVerifySuccess = payload => {
         deps.jwt.verify.callsFake((t, s, cb) => {
           if(s === deps.secret && t === deps.token){
             cb(null, payload);
@@ -116,23 +116,23 @@ describe('protect', () => {
         });
       }
 
-      function mockConnectionPacket(){
+      const mockConnectionPacket = () => {
         deps.connectionPacket.handshake.query.token = deps.token;
         return deps.connectionPacket;
       }
 
-      function mockEventPacket(){
+      const mockEventPacket = () => {
         deps.packet[1].token = deps.token;
         return deps.packet;
       }
   
       describe('when roles is undefined', () => {
-        function testNextCalledWhenRolesUndefined(desc, mockPacket){
+        const testNextCalledWhenRolesUndefined = (desc, mockPacket) => {
           describe(desc, () => {
             it('calls next with no error', (done) => {
               const payload = { a: 'b' };
               jwtVerifySuccess(payload);
-              protect({ secret: deps.secret })()(mockPacket(), (err) => {
+              protect(deps.secret)()(mockPacket(), (err) => {
                 expect(err).to.be.undefined;
                 done();
               });
@@ -145,12 +145,12 @@ describe('protect', () => {
       });
   
       describe('when roles is empty', () => {
-        function testNextCalledWithRolesEmpty(desc, mockPacket){
+        const testNextCalledWithRolesEmpty = (desc, mockPacket) => {
           describe(desc, () => {
             it('calls next with no error', (done) => {
               const payload = { a: 'b' };
               jwtVerifySuccess(payload);
-              protect({ secret: deps.secret })([])(mockPacket(), (err) => {
+              protect(deps.secret)([])(mockPacket(), (err) => {
                 expect(err).to.be.undefined;
                 done();
               });
@@ -163,12 +163,12 @@ describe('protect', () => {
       });
   
       describe('when roles is defined and user has role', () => {
-        function testNextCalledWhenAuthorizationSuccessful(desc, mockPacket){
+        const testNextCalledWhenAuthorizationSuccessful = (desc, mockPacket) => {
           describe(desc, () => {
             it('calls next with no error', (done) => {
               const payload = { role: 'Reader' };
               jwtVerifySuccess(payload);
-              protect({ secret: deps.secret })(['Reader'])(mockPacket(), (err) => {
+              protect(deps.secret)(['Reader'])(mockPacket(), (err) => {
                 expect(err).to.be.undefined;
                 done();
               });
@@ -181,12 +181,12 @@ describe('protect', () => {
       });
   
       describe('when roles is deifned and user does not have role', () => {
-        function testNextCalledWithErrorWhenAuthorizationUnsuccessful(desc, mockPacket){
+        const testNextCalledWithErrorWhenAuthorizationUnsuccessful = (desc, mockPacket) => {
           describe(desc, () => {
             it('calls next with an error', (done) => {
               const payload = { role: 'Reader' };
               jwtVerifySuccess(payload);
-              protect({ secret: deps.secret })(['Writer'])(mockPacket(), (err) => {
+              protect(deps.secret)(['Writer'])(mockPacket(), (err) => {
                 err.message.should.equal('unauthorized');
                 done();
               });
