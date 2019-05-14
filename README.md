@@ -18,7 +18,7 @@ $ npm install simple-auth
 
 ## Usage (Express)
 
-Full example can be found [./examples/http](./examples/http).
+Full examples can be found [./examples/http](./examples/http)
 
 ### setup
 
@@ -44,7 +44,36 @@ auth.setup({ users, secret });
 ### route
 
 ```javascript
+const app = new express();
+auth.http.route(app);
+```
 
+### protect
+
+```javascript
+app.get(
+  '/info',
+  auth.http.protect(),
+  function(req,res){
+    res.status(200).json({ message: 'Any authenticated user can read this' });
+  }
+);
+
+app.get(
+  '/protected_resource_1',
+  auth.http.protect(['User', 'Admin']),
+  function(req,res){
+    res.status(200).json({ message: 'Only Users and Admins can read this' });
+  }
+);
+
+app.get(
+  '/protected_resource_2',
+  auth.http.protect(['Admin']),
+  function(req,res){
+    res.status(200).json({ message: 'Only Admins can read this' });
+  }
+)
 ```
 
 
