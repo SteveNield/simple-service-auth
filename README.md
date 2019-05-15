@@ -62,7 +62,7 @@ app.get(
   auth.http.protect(['Admin']),
   (req,res) => {
     res.status(200).json({ 
-      message: 'Only Users can read this' 
+      message: 'Only Admins can read this' 
     });
   }
 )
