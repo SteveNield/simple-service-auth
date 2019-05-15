@@ -71,11 +71,13 @@ authenticate()
   .then(console.log, console.error)
   .catch(console.error);
 ```
-More examples can be found [./examples/http](./examples/http).  To execute the examples:
+More examples can be found [./examples/http](./examples/http).  
+
+To execute the examples:
 
 In a terminal / console run:
 ```
-node ./examples/http/global-auth
+node ./examples/http/endpoint-auth
 ```
 
 In another terminal / console run:
