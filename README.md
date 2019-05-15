@@ -31,7 +31,7 @@ const auth = require('simple-auth');
 const secret = 'supersecretdonttellanyone';
 const users = [{
   "key": "b56ae1e091c14e26be6aef2bf48ca267",
-  "role": "User"
+  "role": "Admin"
 }];
 
 auth.setup({ users, secret });
@@ -59,7 +59,7 @@ app.get(
 
 app.get(
   '/protected_resource_1',
-  auth.http.protect(['User']),
+  auth.http.protect(['Admin']),
   (req,res) => {
     res.status(200).json({ 
       message: 'Only Users can read this' 
@@ -81,7 +81,7 @@ const http = require('http');
 const secret = 'supersecretdonttellanyone';
 const users = [{
   key: '123123123123',
-  role: 'User'
+  role: 'Admin'
 }];
 
 auth.setup({ users, secret });
@@ -100,7 +100,7 @@ io.on('connect', (socket) => {
 
   auth.socket.route(socket);
 
-  socket.use(auth.socket.protect(['User']));
+  socket.use(auth.socket.protect(['Admin']));
 
   socket.on('protected-resource-1-request', () => {
     socket.emit('protected-resource-1', { message: 'protected-resource-1'});
