@@ -13,6 +13,12 @@ simple-auth requires the following 3 steps to integrate:
 - **route** - setup method of requesting a token by authenticating against a key
 - **protect** - specify which endpoints or events are to be protected and which roles have access
 
+## Client Request Lifecycle
+
+1) authenticate with key
+2) receive a token
+3) make a call to a protected resource using token 
+
 ## Installation
 ```
 $ npm install simple-service-auth
