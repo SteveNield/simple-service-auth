@@ -1,6 +1,6 @@
-# simple-auth
+# simple-service-auth
 
-Simple token-based authentication and authorization for express and socket.io services.
+Lightweight, simple token-based (JWT) authentication and authorization for Express and socket.io services.
 
 Provides paths and middleware for managing access to protected express and/or socket.io services, using a given list of users and roles.
 
