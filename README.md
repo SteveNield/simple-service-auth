@@ -20,13 +20,13 @@ $ npm install simple-service-auth
 
 ## Usage (Express)
 
-Full examples can be found [./examples/http](./examples/http)
+More examples can be found [./examples/http](./examples/http)
 
-### setup
-
+#### Server
 ```javascript
 const express = require('express');
 const auth = require('simple-auth');
+const app = new express();
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
@@ -34,38 +34,17 @@ const users = [{
   "role": "Admin"
 }];
 
+// setup
 auth.setup({ users, secret });
-```
 
-### route
-
-```javascript
-const app = new express();
+// route
 auth.http.route(app);
-```
 
-### protect
-
-```javascript
-app.get(
-  '/info',
-  auth.http.protect(),
-  (req,res) => {
-    res.status(200).json({ 
-      message: 'Any authenticated user can read this' 
-    });
+// protect
+app.get('/info', auth.http.protect(), (req,res) => {
+    res.send('Any authenticated user can read this');
   }
 );
-
-app.get(
-  '/protected_resource_1',
-  auth.http.protect(['Admin']),
-  (req,res) => {
-    res.status(200).json({ 
-      message: 'Only Admins can read this' 
-    });
-  }
-)
 ```
 
 ## Usage (socket.io)
