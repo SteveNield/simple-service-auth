@@ -9,7 +9,7 @@ Provides paths and middleware for managing access to protected express and/or so
 ## Explanation
 simple-auth requires the following 3 steps to integrate:
 
-- **setup** - establish user and role data to be used as well as a secret for tokenisation
+- **setup** - provide secret for tokenisation and establish users
 - **route** - setup method of requesting a token by authenticating against a key
 - **protect** - specify which endpoints or events are to be protected and which roles have access
 
@@ -134,3 +134,95 @@ io.on('connect', (socket) => {
 });
 ```
 
+## Authorization Scopes
+
+Both Express and socket.io services can be protected with configurable granularity.
+
+### Express
+
+simple-service-auth uses middleware to enforce authorization rules so in an Express application, authorization can be specified across server, route and endpoint scopes.
+
+#### Server-Level
+Will apply protection to every request made to the server.
+```javascript
+auth.setup({ ...user_and_token_data });
+const app = new Express();
+app.use(auth.http.protect());
+
+app.get('/', (req,res) => {
+  res.send('protected');
+});
+
+const publicApp = new Express();
+
+publicApp.get('/', (req,res) => {
+  res.send('unprotected');
+});
+```
+
+#### Route-Level
+Will apply protection to every request made to the route.
+```javascript
+auth.setup({ ...user_and_token_data });
+const app = new Express();
+const route = Express.Router();
+route.use(auth.http.protect());
+
+route.get('/', (req,res) => {
+  res.send('protected');
+});
+
+app.use('/', route);
+
+app.get('/public', (req,res) => {
+  res.send('unprotected');
+});
+```
+
+#### Endpoint-Level
+Will apply protection to every request made to the endpoint.
+```javascript
+auth.setup({ ...user_and_token_data });
+const app = new Express();
+
+app.get('/', auth.http.protect(), (req,res) => {
+  res.send('protected');
+});
+
+app.get('/public', (req,res) => {
+  res.send('unprotected');
+});
+```
+
+### socket.io
+
+Rules can be applied at the server and socket levels.
+
+#### Server-Level
+Will apply protection when a connection is attempted by a client.  If the request is unauthorized, an `error` event is emitted to the client with the message `'unauthorized'` and the connection will fail.  This means that the initial connection must contain a valid token and so an unauthenticated client is unable to attempt an authentication and receive a token.  This scenario should therefore be used where a seperate token provider service is being used.  For example, a simple Express service can be used to request tokens as long as the token secret is shared between the services.
+```javascript
+const server = http.createServer();
+const io = require('socket.io')(server);
+io.use(auth.socket.protect());
+
+io.on('connect', socket => {
+  socket.on('event-1', () => {
+    socket.emit('protected-resource', {});
+  });
+});
+```
+
+#### Socket-Level
+Will allow unauthenticated connections and establish `'token-request'` and `'token-response'` event handlers.  If the request is unauthorized, an `error` event is emitted on the socket with the message `'unauthorized'`.
+```javascript
+const server = http.createServer();
+const io = require('socket.io')(server);
+
+io.on('connect', socket => {
+  auth.socket.route(socket); // establish 'token-request' and 'token-response' handlers
+  
+  socket.on('event-1', () => {
+    socket.emit('protected-resource', {});
+  });
+});
+```
