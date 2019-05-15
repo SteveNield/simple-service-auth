@@ -1,7 +1,7 @@
 {
-  "name": "simple-auth",
-  "version": "2.0.3",
-  "description": "Lightweight, simple authentication and authorization for Express and socket.io services",
+  "name": "simple-service-auth",
+  "version": "2.0.4",
+  "description": "Lightweight, simple token-based (JWT) authentication and authorization for Express and socket.io services",
   "main": "index.js",
   "scripts": {
     "test": "mocha tests/**/*-spec.js"
