@@ -1,6 +1,6 @@
 {
   "name": "simple-service-auth",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Lightweight, simple token-based (JWT) authentication and authorization for Express and socket.io services",
   "main": "index.js",
   "scripts": {
