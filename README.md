@@ -42,9 +42,8 @@ auth.http.route(app);
 
 // protect
 app.get('/info', auth.http.protect(), (req,res) => {
-    res.send('Any authenticated user can read this');
-  }
-);
+  res.send('Any authenticated user can read this');
+});
 ```
 
 ## Usage (socket.io)
@@ -56,6 +55,9 @@ Full examples can be found at [./examples/socket/](./examples/socket/)
 ```javascript
 const auth = require('simple-auth');
 const http = require('http');
+const server = http.createServer();
+server.listen(8080);
+const io = require('socket.io')(server);
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
@@ -63,22 +65,16 @@ const users = [{
   role: 'Admin'
 }];
 
+//setup
 auth.setup({ users, secret });
-```
-
-### route and protect
-
-```javascript
-const server = http.createServer();
-server.listen(8080);
-
-const io = require('socket.io')(server);
 
 io.on('connect', (socket) => {
   console.log('connected');
 
+  //route
   auth.socket.route(socket);
 
+  //protect
   socket.use(auth.socket.protect(['Admin']));
 
   socket.on('protected-resource-1-request', () => {
