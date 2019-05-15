@@ -92,9 +92,7 @@ The following output should be printed after running the client:
 
 ## Usage (socket.io)
 
-Full examples can be found at [./examples/socket/](./examples/socket/)
-
-### setup
+### Server
 
 ```javascript
 const auth = require('simple-auth');
@@ -102,7 +100,7 @@ const http = require('http');
 const server = http.createServer();
 const io = require('socket.io')(server);
 
-server.listen(8080);
+server.listen(5223);
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
@@ -126,6 +124,46 @@ io.on('connect', (socket) => {
     socket.emit('protected-resource-1', { message: 'protected-resource-1'});
   });
 });
+```
+
+### Client
+```javascript
+const io = require('socket.io-client');
+
+const socket = io.connect('http://localhost:5223');
+
+socket.on('error', console.error);
+
+socket.on('protected-resource-1', console.log);
+
+socket.on('token-response', tokenResponse => {
+  socket.emit('protected-resource-1-request', {
+    token: tokenResponse.token
+  });
+});
+
+socket.emit('token-request', {
+  key: '123123123123'
+});
+```
+
+Full examples can be found at [./examples/socket/](./examples/socket/)
+
+To execute the examples:
+
+In a terminal / console run:
+```
+node ./examples/socket/event-auth
+```
+
+In another terminal / console run:
+```
+node ./examples/socket/client
+```
+
+The following output should be printed after running the client:
+```
+{ message: 'protected-resource-1' }
 ```
 
 ## Authorization Scopes
