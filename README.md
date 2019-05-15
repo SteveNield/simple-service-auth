@@ -32,12 +32,6 @@ const secret = 'supersecretdonttellanyone';
 const users = [{
   "key": "b56ae1e091c14e26be6aef2bf48ca267",
   "role": "User"
-}, {
-  "key": "d363191642804de8b66236d0bb124f23",
-  "role": "Contributor"
-}, {
-  "key": "3734d1bd6928465eb9aa141d9397b41c",
-  "role": "Admin"
 }];
 
 auth.setup({ users, secret });
@@ -65,20 +59,10 @@ app.get(
 
 app.get(
   '/protected_resource_1',
-  auth.http.protect(['User', 'Admin']),
+  auth.http.protect(['User']),
   (req,res) => {
     res.status(200).json({ 
-      message: 'Only Users and Admins can read this' 
-    });
-  }
-);
-
-app.get(
-  '/protected_resource_2',
-  auth.http.protect(['Admin']),
-  (req,res) => {
-    res.status(200).json({ 
-      message: 'Only Admins can read this' 
+      message: 'Only Users can read this' 
     });
   }
 )
@@ -98,12 +82,6 @@ const secret = 'supersecretdonttellanyone';
 const users = [{
   key: '123123123123',
   role: 'User'
-}, {
-  key: '234kjh234kjh2k34',
-  role: 'Contributor'
-}, {
-  key: '234234234234',
-  role: 'Admin'
 }];
 
 auth.setup({ users, secret });
@@ -122,14 +100,10 @@ io.on('connect', (socket) => {
 
   auth.socket.route(socket);
 
-  socket.use(auth.socket.protect(['User', 'Admin']));
+  socket.use(auth.socket.protect(['User']));
 
   socket.on('protected-resource-1-request', () => {
     socket.emit('protected-resource-1', { message: 'protected-resource-1'});
-  });
-
-  socket.on('protected-resource-2-request', () => {
-    socket.emit('protected-resource-2', { message: 'protected-resource-2'});
   });
 });
 ```
