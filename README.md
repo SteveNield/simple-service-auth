@@ -13,7 +13,7 @@ simple-auth requires the following 3 steps to integrate:
 
 ## Installation
 ```
-$ npm install simple-auth
+$ npm install simple-service-auth
 ```
 
 ## Usage (Express)
