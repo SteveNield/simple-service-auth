@@ -2,25 +2,11 @@ const Express = require('express');
 const auth = require('../../index');
 
 const port = 5221;
-
-const secret = 'supersecretdonttellanyone';
-const users = [{
-  key: '123123123123',
-  role: 'User'
-}, {
-  key: '234kjh234kjh2k34',
-  role: 'Contributor'
-}, {
-  key: '234234234234',
-  role: 'Admin'
-}];
+const config = require('./../winterauth.json');
 
 const app = new Express();
 
-auth.setup({ 
-  users, 
-  secret 
-});
+auth.setup(config);
 auth.http.route(app);
 
 app.get(

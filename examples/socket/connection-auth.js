@@ -1,25 +1,14 @@
 const Express = require('express');
 const http = require('http');
 const auth = require('../../index');
-
-const secret = 'supersecretdonttellanyone';
-const users = [{
-  key: '123123123123',
-  role: 'User'
-}, {
-  key: '234kjh234kjh2k34',
-  role: 'Contributor'
-}, {
-  key: '234234234234',
-  role: 'Admin'
-}];
+const config = require('./../authconfig.json');
 
 const app = new Express();
 
 const server = http.createServer(app);
 server.listen(5222);
 
-auth.setup({ users, secret });
+auth.setup(config);
 
 const io = require('socket.io')(server);
 

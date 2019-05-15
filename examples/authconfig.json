@@ -1,0 +1,13 @@
+{
+  "secret": "supersecretdonttellanyone",
+  "users": [{
+    "key": "123123123123",
+    "role": "User"
+  }, {
+    "key": "234kjh234kjh2k34",
+    "role": "Contributor"
+  }, {
+    "key": "234234234234",
+    "role": "Admin"
+  }]
+}

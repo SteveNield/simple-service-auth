@@ -14,7 +14,9 @@ const users = [{
 }];
 
 const server = http.createServer();
-server.listen(5223);
+server.listen(5223, () => {
+  console.log('listening on port 5223')
+});
 
 auth.setup({ users, secret });
 
