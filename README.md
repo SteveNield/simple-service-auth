@@ -1,5 +1,7 @@
 # simple-service-auth
 
+![npm](https://img.shields.io/npm/v/simple-service-auth.svg?style=flat-square)
+
 Lightweight, simple token-based (JWT) authentication and authorization for Express and socket.io services.
 
 Provides paths and middleware for managing access to protected express and/or socket.io services, using a given list of users and roles.
