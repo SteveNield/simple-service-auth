@@ -20,8 +20,6 @@ $ npm install simple-service-auth
 
 ## Usage (Express)
 
-More examples can be found [./examples/http](./examples/http)
-
 #### Server
 ```javascript
 const express = require('express');
@@ -46,6 +44,50 @@ app.get('/info', auth.http.protect(), (req,res) => {
 });
 ```
 
+### Client
+```javascript
+const httpClient = require('winter-http-client');
+
+const authenticate = () => {
+  return httpClient.post({
+    uri: '...authenticateUri',
+    payload: {
+      key: '...securekey'
+    }
+  });
+}
+
+const callProtectedEndpoint = authenticateResponse => {
+  return httpClient.get({
+    uri: protectedResourceUri,
+    headers: {
+      'x-access-token': authenticateResponse.token
+    }
+  });
+}
+
+authenticate()
+  .then(callProtectedEndpoint)
+  .then(console.log, console.error)
+  .catch(console.error);
+```
+More examples can be found [./examples/http](./examples/http).  To execute the examples:
+
+In a terminal / console run:
+```
+node ./examples/http/global-auth
+```
+
+In another terminal / console run:
+```
+node ./examples/http/client
+```
+
+The following output should be printed after running the client:
+```
+{ message: 'Only Users and Admins can read this' }
+```
+
 ## Usage (socket.io)
 
 Full examples can be found at [./examples/socket/](./examples/socket/)
@@ -56,8 +98,9 @@ Full examples can be found at [./examples/socket/](./examples/socket/)
 const auth = require('simple-auth');
 const http = require('http');
 const server = http.createServer();
-server.listen(8080);
 const io = require('socket.io')(server);
+
+server.listen(8080);
 
 const secret = 'supersecretdonttellanyone';
 const users = [{
